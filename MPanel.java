@@ -16,6 +16,8 @@ public class MPanel extends Panel implements Runnable{
 	private Font font;
 	private MWindow win;
 	private String TITLE_PLAY_NOW = "PRESS START";
+	private SQ[][] GRID;
+	private Integer SQ_HEIGHT;
 
 	public void start () {
 		if (t == null) {
@@ -46,6 +48,8 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx = this.can.createGraphics();
 		this.gfx2D = (Graphics2D)this.gfx;
 		this.gfx2D.setFont(this.font);
+		this.GRID = new SQ [10][20];
+		this.SQ_HEIGHT = 20;
 		super.validate();
 	}
 	
@@ -54,6 +58,9 @@ public class MPanel extends Panel implements Runnable{
 		this.cleanGFX();
 		if (this.isMenu) {
 			this.drawTitle();
+		}
+		else {
+			this.drawBGD();
 		}
 		this.paint(g);
 		//this.isUpdating = false;
@@ -76,6 +83,13 @@ public class MPanel extends Panel implements Runnable{
 	public void drawTitle() {
 		this.gfx2D.setColor(Color.black);
 		this.gfx2D.drawString(TITLE_PLAY_NOW, (this.bounds.width/2) - (6 * (TITLE_PLAY_NOW.length())), (this.bounds.height/2) - 10);
+	}
+
+	public void drawBGD() {
+		this.gfx2D.setColor(Color.gray);
+		this.gfx2D.fillRect(0,0,this.bounds.width,this.bounds.height);
+		this.gfx2D.setColor(Color.white);
+		this.gfx2D.fillRect((int)(this.bounds.width * .25) - (5 * this.SQ_HEIGHT), (int)(this.bounds.height * .5) - (10 * this.SQ_HEIGHT), (10 * this.SQ_HEIGHT), (20 * this.SQ_HEIGHT));
 	}
 
 	public void cleanGFX() {
