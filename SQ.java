@@ -1,8 +1,8 @@
-/*		I = 0 = Orange
-		L = 1 = Orange Yellow
+/*		I = 0 = Red
+		L = 1 = Orange
 		J = 2 = Blue
 		S = 3 = Purple
-		T = 4 = Sky-Blue
+		T = 4 = Cyan
 		Z = 5 = Green
 		O = 6 = Yellow
 */
