@@ -28,6 +28,39 @@ public class Electromino {
 				}
 			}
 		}
+		else if (i == 1) {
+			this.piece = new SQ[3][3];
+			this.piece[0][0] = new SQ(i);
+			this.piece[0][1] = new SQ(i);
+			this.piece[1][1] = new SQ(i);
+			this.piece[2][1] = new SQ(i);
+			SQ[][] tmp = new SQ [3][3];
+			tmp[0][2] = new SQ (i);
+			tmp[1][2] = new SQ (i);
+			tmp[1][1] = new SQ (i);
+			tmp[1][0] = new SQ (i);
+			Electromino t1 = new Electromino (i, tmp);
+			this.next = t1;
+			t1.setPrev(this);
+			tmp = new SQ [3][3];
+			tmp[0][0] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[2][0] = new SQ(i);
+			tmp[2][1] = new SQ(i);
+			Electromino t2 = new Electromino (i, tmp);
+			t1.setNext(t2);
+			t2.setPrev(t1);
+			tmp = new SQ[3][3];
+			tmp[1][2] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[2][0] = new SQ(i);
+			t1 = new Electromino (i, tmp);
+			t2.setNext(t1);
+			t1.setPrev(t2);
+			this.prev = t1;
+			t1.setNext(this);
+		}
 		else if (i == 0) {
 			this.piece = new SQ[4][4];
 			this.piece[0][2] = new SQ(i);
