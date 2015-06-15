@@ -90,25 +90,58 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public synchronized void moveLeft () {
-		boolean chk = true;
-		if (this.cp.getX() > 0 && !this.movable[3]) {
+		boolean chk = true;			//move the point, check if any pieces are out of bounds
+		//if (this.cp.getX() > 0 && !this.movable[3]) {
+		int x = (int)this.cp.getX() - 1;
+		int y = (int)this.cp.getY();
+		for (int a = 0; a < this.current.getPiece().length && chk; a++) {
+			for (int b = 0; b < this.current.getPiece()[0].length && chk; b++) {
+				if (this.current.getPiece()[a][b] != null && a + x < 0) {
+					chk = false;
+				}
+			}
+		}
+		if (chk && !this.movable[3]) {
 			this.cp.translate(-1,0);
 			this.movable[3] = !this.movable[3];
 		}
 	}
+	
 	public synchronized void moveRight () {
-		if (this.cp.getX() + this.current.getPiece().length < 10 && !this.movable[2]) {
+		boolean chk = true;
+		//if (this.cp.getX() + this.current.getPiece().length < 10 && !this.movable[2]) {
+		int x = (int)this.cp.getX() + 1;
+		int y = (int)this.cp.getY();
+		for (int a = 0; a < this.current.getPiece().length && chk; a++) {
+			for (int b = 0; b < this.current.getPiece()[0].length && chk; b++) {
+				if (this.current.getPiece()[a][b] != null && a + x > 9) {
+					chk = false;
+				}
+			}
+		}
+		if (chk && !this.movable[2]) {
 			this.cp.translate(1,0);
 			this.movable[2] = !this.movable[2];
 		}
 	}
 	public synchronized void moveDown () {
-		if (this.cp.getY() > 0 && !this.movable[1]) {
+		boolean chk = true;
+		//if (this.cp.getY() > 0 && !this.movable[1]) {
+		int x = (int)this.cp.getX();
+		int y = (int)this.cp.getY() - 1;
+		for (int a = 0; a < this.current.getPiece().length && chk; a++) {
+			for (int b = 0; b < this.current.getPiece()[0].length && chk; b++) {
+				if (this.current.getPiece()[a][b] != null && b + y < 0) {
+					chk = false;
+				}
+			}
+		}
+		if (chk && !this.movable[1]) {
 			this.cp.translate(0,-1);
 			this.movable[1] = !this.movable[1];
 		}
 	}
-	public synchronized void moveUp () {
+	public synchronized void moveUp () {			//this game should not support moving up
 		if (this.cp.getY() + this.current.getPiece()[0].length < 20 && !this.movable[0]) {
 			this.cp.translate(0,1);
 			this.movable[0] = !this.movable[0];
