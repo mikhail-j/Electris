@@ -55,8 +55,12 @@ public class GameListener implements KeyListener , Runnable {
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				this.pan.moveRight();
 			}
-			if (e.getKeyCode() == KeyEvent.VK_A) {}
-			if (e.getKeyCode() == KeyEvent.VK_D) {}
+			if (e.getKeyCode() == KeyEvent.VK_A) {
+				this.pan.rCCW();
+			}
+			if (e.getKeyCode() == KeyEvent.VK_D) {
+				this.pan.rCW();
+			}
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {			//set piece in place
 			}
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {

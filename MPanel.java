@@ -71,7 +71,7 @@ public class MPanel extends Panel implements Runnable{
 	
 	@Override
 	public void update (Graphics g) {
-		//++frame_count;
+		++frame_count;
 		this.movable[0] = new Boolean(false);
 		this.movable[1] = new Boolean(false);
 		this.movable[2] = new Boolean(false);
@@ -84,7 +84,7 @@ public class MPanel extends Panel implements Runnable{
 			this.drawBGD();
 			this.drawCurrent();
 		}
-			//this.drawFPS();
+			this.drawFPS();
 		this.paint(g);
 		//this.isUpdating = false;
 	}
@@ -166,6 +166,18 @@ public class MPanel extends Panel implements Runnable{
 		return this.isGame;
 	}
 
+	public void rCW () {
+		if (this.current.getC() != 6) {
+			this.current = this.current.getNext();
+		}
+	}
+
+	public void rCCW () {
+		if (this.current.getC() != 6) {
+			this.current = this.current.getPrev();
+		}
+	}
+
 	public void setGameState(Boolean b) {
 		this.isGame = b;
 	}
@@ -183,7 +195,8 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public void drawFPS() {
-		String fps = new String("" + (frame_count/((double)(System.nanoTime() - this.SYSTEM_TIME) * .000000001)));
+		String fps = new String(
+		(new DecimalFormat("#.###")).format((frame_count/((double)(System.nanoTime() - this.SYSTEM_TIME) * .000000001))));
 		frame_count = 0;
 		this.gfx2D.setColor(Color.black);
 		this.gfx2D.drawString(fps, (int)(this.bounds.width * .75), (this.bounds.height/2) - 10);
@@ -205,7 +218,12 @@ public class MPanel extends Panel implements Runnable{
 		for (int i = 0; i < this.current.getPiece().length; i++) {
 			for (int j = 0; j < this.current.getPiece()[0].length; j++) {
 				if (this.current.getPiece()[i][j] != null) {
-					this.gfx2D.setColor(Color.yellow);
+					if (this.current.getC() == 6) {
+						this.gfx2D.setColor(Color.yellow);
+					}
+					else if (this.current.getC() == 0) {
+						this.gfx2D.setColor(Color.red);
+					}
 					this.gfx2D.fillRect(xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY()) * this.SQ_HEIGHT), this.SQ_HEIGHT, this.SQ_HEIGHT);
 					this.gfx2D.setColor(Color.black);
 					this.gfx2D.drawString("" + ++counter, xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY() - 1) * this.SQ_HEIGHT));
