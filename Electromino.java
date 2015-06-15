@@ -28,13 +28,113 @@ public class Electromino {
 				}
 			}
 		}
+		else if (i == 5) {
+			this.piece = new SQ[3][3];
+			this.piece[0][1] = new SQ(i);
+			this.piece[1][1] = new SQ(i);
+			this.piece[1][0] = new SQ(i);
+			this.piece[2][0] = new SQ(i);
+			SQ[][] tmp = new SQ[3][3];
+			tmp[1][0] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[2][1] = new SQ(i);
+			tmp[2][2] = new SQ(i);
+			Electromino te = new Electromino (i, tmp);
+			this.prev = te;
+			this.next = te;
+			te.setPrev(this);
+			te.setNext(this);
+		}
+		else if (i == 4) {
+			this.piece = new SQ[3][3];
+			this.piece[0][1] = new SQ(i);
+			this.piece[1][1] = new SQ(i);
+			this.piece[2][1] = new SQ(i);
+			this.piece[1][0] = new SQ(i);
+			SQ[][] tmp = new SQ[3][3];
+			tmp[0][1] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[1][2] = new SQ(i);
+			Electromino t1 = new Electromino (i, tmp);
+			this.next = t1;
+			t1.setPrev(this);
+			tmp = new SQ[3][3];
+			tmp[1][1] = new SQ(i);
+			tmp[0][0] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[2][0] = new SQ(i);
+			Electromino t2 = new Electromino (i, tmp);
+			t1.setNext(t2);
+			t2.setPrev(t1);
+			tmp = new SQ[3][3];
+			tmp[2][1] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[1][2] = new SQ(i);
+			t1 = new Electromino (i, tmp);
+			t2.setNext(t1);
+			t1.setPrev(t2);
+			t1.setNext(this);
+			this.prev = t1;
+		}
+		else if (i == 3) {
+			this.piece = new SQ[3][3];
+			this.piece[0][0] = new SQ(i);
+			this.piece[1][0] = new SQ(i);
+			this.piece[1][1] = new SQ(i);
+			this.piece[2][1] = new SQ(i);
+			SQ[][] tmp = new SQ[3][3];
+			tmp[0][2] = new SQ(i);
+			tmp[0][1] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			Electromino te = new Electromino (i, tmp);
+			this.next = te;
+			this.prev = te;
+			te.setPrev(this);
+			te.setNext(this);
+		}
+		else if (i == 2) {
+			this.piece = new SQ[3][3];
+			this.piece[0][1] = new SQ(i);
+			this.piece[1][1] = new SQ(i);
+			this.piece[2][1] = new SQ(i);
+			this.piece[2][0] = new SQ(i);
+			SQ[][] tmp = new SQ[3][3];
+			tmp[0][0] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[1][2] = new SQ(i);
+			Electromino t1 = new Electromino (i, tmp);
+			this.next = t1;
+			t1.setPrev(this);
+			tmp = new SQ [3][3];
+			tmp[0][1] = new SQ(i);
+			tmp[0][0] = new SQ(i);
+			tmp[1][0] = new SQ(i);
+			tmp[2][0] = new SQ(i);
+			Electromino t2 = new Electromino (i, tmp);
+			t1.setNext(t2);
+			t2.setPrev(t1);
+			tmp = new SQ[3][3];
+			tmp[1][0] = new SQ(i);
+			tmp[1][1] = new SQ(i);
+			tmp[1][2] = new SQ(i);
+			tmp[2][2] = new SQ(i);
+			t1 = new Electromino (i, tmp);
+			t2.setNext(t1);
+			t1.setPrev(t2);
+			t1.setNext(this);
+			this.prev = t1;
+		}
 		else if (i == 1) {
 			this.piece = new SQ[3][3];
 			this.piece[0][0] = new SQ(i);
 			this.piece[0][1] = new SQ(i);
 			this.piece[1][1] = new SQ(i);
 			this.piece[2][1] = new SQ(i);
-			SQ[][] tmp = new SQ [3][3];
+			SQ[][] tmp = new SQ[3][3];
 			tmp[0][2] = new SQ (i);
 			tmp[1][2] = new SQ (i);
 			tmp[1][1] = new SQ (i);
@@ -67,7 +167,7 @@ public class Electromino {
 			this.piece[1][2] = new SQ(i);
 			this.piece[2][2] = new SQ(i);
 			this.piece[3][2] = new SQ(i);
-			SQ[][] tmp = new SQ [4][4];
+			SQ[][] tmp = new SQ[4][4];
 			tmp[2][0] = new SQ(i);
 			tmp[2][1] = new SQ(i);
 			tmp[2][2] = new SQ(i);

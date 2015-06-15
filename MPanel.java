@@ -59,7 +59,7 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx2D.setFont(this.font);
 		this.GRID = new SQ [10][20];
 		this.SQ_HEIGHT = 20;
-		this.current = new Electromino (0);
+		this.current = new Electromino (4);
 		System.out.println("current piece size - width: " + this.current.getPiece().length + " height: " + this.current.getPiece()[0].length);
 		this.cp = new Point (3, 0);
 		this.movable = new Boolean [4];
@@ -168,7 +168,7 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public void rCW () {
-		if (this.current.getC() != 6) {
+		if (this.current.getC() != 6) {				//no point in rotating the sqaure
 			this.current = this.current.getNext();
 		}
 	}
@@ -196,8 +196,7 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public void drawFPS() {
-		String fps = new String(
-		(new DecimalFormat("#.###")).format((frame_count/((double)(System.nanoTime() - this.SYSTEM_TIME) * .000000001))));
+		String fps = new String("FPS: " + (new DecimalFormat("#.###")).format((frame_count/((double)(System.nanoTime() - this.SYSTEM_TIME) * .000000001))));
 		frame_count = 0;
 		this.gfx2D.setColor(Color.black);
 		this.gfx2D.drawString(fps, (int)(this.bounds.width * .75), (this.bounds.height/2) - 10);
@@ -221,6 +220,21 @@ public class MPanel extends Panel implements Runnable{
 				if (this.current.getPiece()[i][j] != null) {
 					if (this.current.getC() == 6) {
 						this.gfx2D.setColor(Color.yellow);
+					}
+					else if (this.current.getC() == 5) {
+						this.gfx2D.setColor(Color.green);
+					}
+					else if (this.current.getC() == 4) {
+						this.gfx2D.setColor(Color.cyan);
+					}
+					else if (this.current.getC() == 3) {
+						this.gfx2D.setColor(Color.magenta);
+					}
+					else if (this.current.getC() == 2) {
+						this.gfx2D.setColor(Color.blue);
+					}
+					else if (this.current.getC() == 1) {
+						this.gfx2D.setColor(Color.orange);
 					}
 					else if (this.current.getC() == 0) {
 						this.gfx2D.setColor(Color.red);
