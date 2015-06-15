@@ -13,7 +13,7 @@ public class Electromino {
 	private Electromino next;
 	private Electromino prev;
 
-	public Electromino (int i, SQ s) {
+	public Electromino (int i, SQ[][] s) {
 		this.type = new Integer(i);
 		this.piece = s;
 	}
@@ -64,10 +64,10 @@ public class Electromino {
 	public Electromino getPrev() {
 		return this.prev;
 	}
-	public void setNext(SQ n) {
+	public void setNext(Electromino n) {
 		this.next = n;
 	}
-	public void setPrev(SQ p) {
+	public void setPrev(Electromino p) {
 		this.prev = p;
 	}
 }
