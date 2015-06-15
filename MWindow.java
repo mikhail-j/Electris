@@ -12,6 +12,7 @@ public class MWindow {
 	private Rectangle bounds;
 	private MPanel pan;
 	private MenuListener MENU_CONTROLS;
+	private GameListener GAME_CONTROLS;
 
 	public MWindow () {
 		this.wframe = new Frame("Electris");
@@ -39,10 +40,13 @@ public class MWindow {
 		});
 		(new Thread(this.pan = new MPanel(this.wframe, this))).start();
 		this.MENU_CONTROLS = new MenuListener(this.pan, this.wframe);
+		this.GAME_CONTROLS = new GameListener(this.pan, this.wframe);
 		this.wframe.add(this.pan);
 		this.wframe.validate();
  		this.wframe.setVisible(true);
-		//(new Thread(this.MENU_CONTROLS)).start();
+		(new Thread(this.MENU_CONTROLS)).start();
+		(new Thread(this.GAME_CONTROLS)).start();
 		this.wframe.addKeyListener(this.MENU_CONTROLS);
+		this.wframe.addKeyListener(this.GAME_CONTROLS);
 	}
 }

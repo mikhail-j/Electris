@@ -3,10 +3,10 @@ import java.text.*;
 import java.util.*;
 import java.awt.event.*;
 
-public class MenuListener implements KeyListener {//, Runnable {
+public class MenuListener implements KeyListener , Runnable {
 	private MPanel pan;
 	private Window win;
-	/*private Thread t;
+	private Thread t;
 
 	public void start () {
 		if (t == null) {
@@ -15,22 +15,24 @@ public class MenuListener implements KeyListener {//, Runnable {
 		} 
 	}
 	public void stop () { if (t != null) {t.stop(); t = null;}}
-	public void run () {
+	public void run () {/*
 		try {
-			this.t.sleep(50);
+			this.t.sleep(1);
 		}
 		catch (InterruptedException ie) {}
+		*/
 	}
-*/
+
 	public MenuListener (MPanel p, Window w) {
 		this.pan = p;
 		this.win = w;
 	}
 
 	public void keyPressed(KeyEvent e) {
-		if (this.pan.getMenuState() != null) {
-			if (e.getKeyCode() == KeyEvent.VK_ENTER && this.pan.getMenuState() != false) {
+		if (this.pan.getMenuState() != null && this.pan.getMenuState()) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				this.pan.setMenuState(new Boolean(false));
+				this.pan.setGameState(new Boolean(true));
 				System.out.println("play! " + this.pan.getMenuState());
 			}
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {

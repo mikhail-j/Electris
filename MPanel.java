@@ -11,6 +11,7 @@ public class MPanel extends Panel implements Runnable{
 	private Thread t;
 	private Boolean isUpdating;
 	private Boolean isMenu;
+	private Boolean isGame;
 	private Frame ctx;
 	private Rectangle bounds;
 	private Font font;
@@ -19,7 +20,10 @@ public class MPanel extends Panel implements Runnable{
 	private SQ[][] GRID;
 	private Integer SQ_HEIGHT;
 	private Electromino current;
-	private Point cp;
+	private Point cp;				//x and y position of the current electromino piece
+	private long frame_count;		//used to calculate fps
+	private long SYSTEM_TIME;		//last recorded system nanotime
+	private Boolean[] movable;		//has the electromino been moved in a certain direction this frame?
 
 	public void start () {
 		if (t == null) {
@@ -32,15 +36,17 @@ public class MPanel extends Panel implements Runnable{
 		try {
 			while (this.isUpdating) {
 				super.repaint();
-				this.t.sleep(50);
+				this.t.sleep(20);
 			}
 		}
 		catch (InterruptedException ie) {}
 	}
 
 	public MPanel (Frame window, MWindow win) {
+		this.SYSTEM_TIME = System.nanoTime();
 		this.isUpdating = true;
 		this.isMenu = true;
+		this.isGame = false;		//game hasn't started yet
 		this.win = win;
 		this.font = new Font("Arial Monospaced", Font.PLAIN, 20);
 		this.ctx = window;
@@ -55,11 +61,21 @@ public class MPanel extends Panel implements Runnable{
 		this.current = new Electromino (0);
 		System.out.println("current piece size - width: " + this.current.getPiece().length + " height: " + this.current.getPiece()[0].length);
 		this.cp = new Point (3, 0);
+		this.movable = new Boolean [4];
+		this.movable[0] = new Boolean(false);
+		this.movable[1] = new Boolean(false);
+		this.movable[2] = new Boolean(false);
+		this.movable[3] = new Boolean(false);
 		super.validate();
 	}
 	
 	@Override
 	public void update (Graphics g) {
+		//++frame_count;
+		this.movable[0] = new Boolean(false);
+		this.movable[1] = new Boolean(false);
+		this.movable[2] = new Boolean(false);
+		this.movable[3] = new Boolean(false);
 		this.cleanGFX();
 		if (this.isMenu) {
 			this.drawTitle();
@@ -68,8 +84,35 @@ public class MPanel extends Panel implements Runnable{
 			this.drawBGD();
 			this.drawCurrent();
 		}
+			//this.drawFPS();
 		this.paint(g);
 		//this.isUpdating = false;
+	}
+
+	public synchronized void moveLeft () {
+		boolean chk = true;
+		if (this.cp.getX() > 0 && !this.movable[3]) {
+			this.cp.translate(-1,0);
+			this.movable[3] = !this.movable[3];
+		}
+	}
+	public synchronized void moveRight () {
+		if (this.cp.getX() + this.current.getPiece().length < 10 && !this.movable[2]) {
+			this.cp.translate(1,0);
+			this.movable[2] = !this.movable[2];
+		}
+	}
+	public synchronized void moveDown () {
+		if (this.cp.getY() > 0 && !this.movable[1]) {
+			this.cp.translate(0,-1);
+			this.movable[1] = !this.movable[1];
+		}
+	}
+	public synchronized void moveUp () {
+		if (this.cp.getY() + this.current.getPiece()[0].length < 20 && !this.movable[0]) {
+			this.cp.translate(0,1);
+			this.movable[0] = !this.movable[0];
+		}
 	}
 
 	@Override
@@ -86,6 +129,14 @@ public class MPanel extends Panel implements Runnable{
 		this.isMenu = b;
 	}
 
+	public Boolean getGameState() {
+		return this.isGame;
+	}
+
+	public void setGameState(Boolean b) {
+		this.isGame = b;
+	}
+
 	public void drawTitle() {
 		this.gfx2D.setColor(Color.black);
 		this.gfx2D.drawString(TITLE_PLAY_NOW, (this.bounds.width/2) - (6 * (TITLE_PLAY_NOW.length())), (this.bounds.height/2) - 10);
@@ -97,7 +148,15 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx2D.setColor(Color.white);
 		this.gfx2D.fillRect((int)(this.bounds.width * .25) - (5 * this.SQ_HEIGHT), (int)(this.bounds.height * .5) - (10 * this.SQ_HEIGHT), (10 * this.SQ_HEIGHT), (20 * this.SQ_HEIGHT));
 	}
-	
+
+	public void drawFPS() {
+		String fps = new String("" + (frame_count/((double)(System.nanoTime() - this.SYSTEM_TIME) * .000000001)));
+		frame_count = 0;
+		this.gfx2D.setColor(Color.black);
+		this.gfx2D.drawString(fps, (int)(this.bounds.width * .75), (this.bounds.height/2) - 10);
+		this.SYSTEM_TIME = System.nanoTime();
+	}
+
 	public void drawCurrent() {
 		this.gfx2D.setColor(Color.yellow);
 		int xi = (int)(this.bounds.width * .25) - (5 * this.SQ_HEIGHT);
