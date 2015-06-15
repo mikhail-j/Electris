@@ -24,6 +24,7 @@ public class MPanel extends Panel implements Runnable{
 	private long frame_count;		//used to calculate fps
 	private long SYSTEM_TIME;		//last recorded system nanotime
 	private Boolean[] movable;		//has the electromino been moved in a certain direction this frame?
+	private Queue<Electromino> nes;		//queue of the following electrominos
 
 	public void start () {
 		if (t == null) {
