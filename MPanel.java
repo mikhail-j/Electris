@@ -64,7 +64,7 @@ public class MPanel extends Panel implements Runnable{
 		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
 		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
 		System.out.println("current piece size - width: " + this.current.getPiece().length + " height: " + this.current.getPiece()[0].length);
-		this.cp = new Point (3, 0);
+		this.cp = new Point (3, 17);
 		this.movable = new Boolean [4];
 		this.movable[0] = new Boolean(false);
 		this.movable[1] = new Boolean(false);
@@ -451,6 +451,34 @@ public class MPanel extends Panel implements Runnable{
 				}
 			}
 		}
+		this.cp.setLocation(this.cp.getX(),20);
+		boolean not_low = true;
+		boolean still_looking = true;
+		int ydiff = 0;
+		while (not_low) {
+			for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+				for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+					if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+						if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+							still_looking = false;
+							not_low = false;
+						}
+					}
+					else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+						still_looking = false;
+						not_low = false;
+					}
+				}
+			}
+			if (still_looking) {
+				--ydiff;
+			}
+			else {
+				++ydiff;
+			}
+		}
+		this.cp.translate(0,ydiff);
+		//System.out.println("ydiff: " + ydiff + " x: " + this.cp.getX() + " y: " + this.cp.getY());
 		int counter = 0;
 		for (int i = 0; i < this.current.getPiece().length; i++) {
 			for (int j = 0; j < this.current.getPiece()[0].length; j++) {
