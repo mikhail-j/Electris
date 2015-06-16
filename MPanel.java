@@ -3,6 +3,7 @@ import java.awt.geom.*;
 import java.awt.image.*;
 import java.text.*;
 import java.util.*;
+import java.io.*;
 
 public class MPanel extends Panel implements Runnable{
 	private BufferedImage can;
@@ -47,14 +48,32 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public MPanel (Frame window, MWindow win) {
+		
 		this.SYSTEM_TIME = System.nanoTime();
 		this.isUpdating = true;
 		this.isMenu = true;
 		this.isGame = false;		//game hasn't started yet
 		this.isOver = false;
 		this.win = win;
-		this.font = new Font("Arial Monospaced", Font.PLAIN, 20);
-		this.end_font = new Font("Arial Monospaced", Font.PLAIN, 72);
+		try {
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("PressStart2P-Regular.ttf")));
+			this.font = (Font.createFont(Font.TRUETYPE_FONT, new File("PressStart2P-Regular.ttf"))).deriveFont(20f);
+			this.end_font = (Font.createFont(Font.TRUETYPE_FONT, new File("PressStart2P-Regular.ttf"))).deriveFont(72f);
+		}
+		catch (IOException e) {
+			this.font = new Font("Arial Monospaced", Font.PLAIN, 20);
+			this.end_font = new Font("Arial Monospaced", Font.PLAIN, 72);
+			System.out.println("fail");
+		}
+		catch (FontFormatException e) {
+			this.font = new Font("Arial Monospaced", Font.PLAIN, 20);
+			this.end_font = new Font("Arial Monospaced", Font.PLAIN, 72);
+			System.out.println("fail");
+		}
+		//this.font = new Font("Arial Monospaced", Font.PLAIN, 20);
+		//this.end_font = new Font("Arial Monospaced", Font.PLAIN, 72);
+		
 		this.ctx = window;
 		this.bounds = this.ctx.getBounds();
 		super.setSize(this.bounds.width,this.bounds.height);
@@ -629,7 +648,7 @@ public class MPanel extends Panel implements Runnable{
 		else {
 			this.gfx2D.setColor(Color.black);
 		}
-		this.gfx2D.drawString(fps, (int)(this.bounds.width * .75), (this.bounds.height/2) - 10);
+		this.gfx2D.drawString(fps, (int)(this.bounds.width * .75), (int)(this.bounds.height * .1) - 10);
 		this.SYSTEM_TIME = System.nanoTime();
 	}
 
@@ -698,8 +717,8 @@ public class MPanel extends Panel implements Runnable{
 						this.gfx2D.setColor(Color.red);
 					}
 					this.gfx2D.fillRect(xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY()) * this.SQ_HEIGHT), this.SQ_HEIGHT, this.SQ_HEIGHT);
-					this.gfx2D.setColor(Color.black);
-					this.gfx2D.drawString("" + ++counter, xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY() - 1) * this.SQ_HEIGHT));
+					//this.gfx2D.setColor(Color.black);
+					//this.gfx2D.drawString("" + ++counter, xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY() - 1) * this.SQ_HEIGHT));
 					if (j + this.cp.getY() >= 20) {
 						this.isOver = true;
 						this.isGame = false;
@@ -750,7 +769,7 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx.fillRect(0,0,this.bounds.width,this.bounds.height);
 		this.gfx.setColor(Color.white);
 		this.gfx2D.setFont(this.end_font);
-		this.gfx2D.drawString("GAME OVER", (this.bounds.width/2) - (20 * ("GAME OVER".length())), (this.bounds.height/2) - 36);
+		this.gfx2D.drawString("GAME OVER", (this.bounds.width/2) - (33 * ("GAME OVER".length())), (this.bounds.height/2) - 36);
 		this.gfx2D.setFont(this.font);
 	}
 }
