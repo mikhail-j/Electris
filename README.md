@@ -3,6 +3,16 @@ Java Implementation of an old classic game.
 
 The next few electrominos are shown above the 10 x 20 grid in a queue. Every row that is filled deletes itself. You lose when the electrominos exceed row 20. This game uses only hard gravity, pieces do not fall slowly.
 
+To Compile
+================
+
+javac Electris.java
+
+To Play
+================
+
+java Electris
+
 Controls
 ================
 
