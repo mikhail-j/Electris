@@ -173,13 +173,184 @@ public class MPanel extends Panel implements Runnable{
 
 	public void rCW () {
 		if (this.current.getC() != 6) {				//no point in rotating the sqaure
-			this.current = this.current.getNext();
+			int chk = 0;
+			int x = (int)this.cp.getX();
+			int y = (int)this.cp.getY();
+			Electromino n = this.current.getNext();
+			for (int a = 0; a < n.getPiece().length && chk == 0; a++) {
+				for (int b = 0; b < n.getPiece()[0].length && chk == 0; b++) {
+					if (n.getPiece()[a][b] != null && a + x > 9) {
+						chk = 1;
+					}
+					if (n.getPiece()[a][b] != null && a + x < 0) {
+						chk = -1;
+					}
+				}
+			}
+			if (chk != 0) {
+				if (chk == 1) {
+					int x1 = x - 1;
+					boolean c1 = true;
+					for (int a = 0; a < n.getPiece().length && c1; a++) {
+						for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+							if (n.getPiece()[a][b] != null && a + x1 > 9) {
+								c1 = false;
+							}
+						}
+					}
+					if (c1) {
+						this.current = n;
+						this.cp.translate(-1,0);
+					}
+					else {
+						c1 = true;
+						x1 = x - 2;
+						for (int a = 0; a < n.getPiece().length && c1; a++) {
+							for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+								if (n.getPiece()[a][b] != null && a + x1 > 9) {
+									c1 = false;
+								}
+							}
+						}
+						if (c1) {
+							this.current = n;
+							this.cp.translate(-2, 0);
+						}
+					}
+				}
+				else if (chk == -1) {
+					int x1 = x + 1;
+					boolean c1 = true;
+					for (int a = 0; a < n.getPiece().length && c1; a++) {
+						for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+							if (n.getPiece()[a][b] != null && a + x1 < 0) {
+								c1 = false;
+							}
+						}
+					}
+					if (c1) {
+						this.current = n;
+						this.cp.translate(1,0);
+					}
+					else {
+						c1 = true;
+						x1 = x + 2;
+						for (int a = 0; a < n.getPiece().length && c1; a++) {
+							for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+								if (n.getPiece()[a][b] != null && a + x1 < 0) {
+									c1 = false;
+								}
+							}
+						}
+						if (c1) {
+							this.current = n;
+							this.cp.translate(2, 0);
+						}
+						else {
+							c1 = true;
+							x1 = x + 3;
+							for (int a = 0; a < n.getPiece().length && c1; a++) {
+								for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+									if (n.getPiece()[a][b] != null && a + x1 < 0) {
+										c1 = false;
+									}
+								}
+							}
+							if (c1) {
+								this.current = n;
+								this.cp.translate(3, 0);
+							}
+						}
+					}
+				}
+			}
+			else if (chk == 0) {
+				this.current = this.current.getNext();
+			}
 		}
 	}
 
 	public void rCCW () {
 		if (this.current.getC() != 6) {
-			this.current = this.current.getPrev();
+			int chk = 0;
+			int x = (int)this.cp.getX();
+			int y = (int)this.cp.getY();
+			Electromino n = this.current.getPrev();
+			for (int a = 0; a < n.getPiece().length && chk == 0; a++) {
+				for (int b = 0; b < n.getPiece()[0].length && chk == 0; b++) {
+					if (n.getPiece()[a][b] != null && a + x > 9) {
+						chk = 1;
+					}
+					if (n.getPiece()[a][b] != null && a + x < 0) {
+						chk = -1;
+					}
+				}
+			}
+			if (chk != 0) {
+				if (chk == 1) {
+					int x1 = x - 1;
+					boolean c1 = true;
+					for (int a = 0; a < n.getPiece().length && c1; a++) {
+						for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+							if (n.getPiece()[a][b] != null && a + x1 > 9) {
+								c1 = false;
+							}
+						}
+					}
+					if (c1) {
+						this.current = n;
+						this.cp.translate(-1,0);
+					}
+					else {
+						c1 = true;
+						x1 = x1 - 1;
+						for (int a = 0; a < n.getPiece().length && c1; a++) {
+							for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+								if (n.getPiece()[a][b] != null && a + x1 > 9) {
+									c1 = false;
+								}
+							}
+						}
+						if (c1) {
+							this.current = n;
+							this.cp.translate(-2, 0);
+						}
+					}
+				}
+				else if (chk == -1) {
+					int x1 = x + 1;
+					boolean c1 = true;
+					for (int a = 0; a < n.getPiece().length && c1; a++) {
+						for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+							if (n.getPiece()[a][b] != null && a + x1 < 0) {
+								c1 = false;
+							}
+						}
+					}
+					if (c1) {
+						this.current = n;
+						this.cp.translate(1,0);
+					}
+					else {
+						c1 = true;
+						x1 = x1 + 1;
+						for (int a = 0; a < n.getPiece().length && c1; a++) {
+							for (int b = 0; b < n.getPiece()[0].length && c1; b++) {
+								if (n.getPiece()[a][b] != null && a + x1 < 0) {
+									c1 = false;
+								}
+							}
+						}
+						if (c1) {
+							this.current = n;
+							this.cp.translate(2, 0);
+						}
+					}
+				}
+			}
+			else {
+				this.current = this.current.getPrev();
+			}
 		}
 	}
 
