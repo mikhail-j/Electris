@@ -62,6 +62,7 @@ public class GameListener implements KeyListener , Runnable {
 				this.pan.rCW();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {			//set piece in place
+				this.pan.placeElectromino();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				this.pan.setMenuState(new Boolean(true));

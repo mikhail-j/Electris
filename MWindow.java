@@ -18,9 +18,9 @@ public class MWindow {
 		this.wframe = new Frame("Electris");
 		this.fwindow = new Window(this.wframe);
 		this.gc = this.fwindow.getGraphicsConfiguration();
-		this.buff = this.gc.createCompatibleImage(1280,720);
+		this.buff = this.gc.createCompatibleImage(800,600);
 		this.wframe.setResizable(false);
-		this.wframe.setSize(640,480);
+		this.wframe.setSize(800,600);
 		this.bounds = this.wframe.getMaximizedBounds();
 		System.out.println("height: " + this.wframe.getBounds().height + " width: " + this.wframe.getBounds().width);
  		this.wframe.setLocation(100,100);

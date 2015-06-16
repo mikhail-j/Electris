@@ -59,7 +59,10 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx2D.setFont(this.font);
 		this.GRID = new SQ [10][20];
 		this.SQ_HEIGHT = 20;
-		this.current = new Electromino (4);
+		this.current = new Electromino ((int)(Math.floor(7 * Math.random())));
+		this.nes = new LinkedList<Electromino>();
+		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
+		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
 		System.out.println("current piece size - width: " + this.current.getPiece().length + " height: " + this.current.getPiece()[0].length);
 		this.cp = new Point (3, 0);
 		this.movable = new Boolean [4];
@@ -84,6 +87,7 @@ public class MPanel extends Panel implements Runnable{
 		else {
 			this.drawBGD();
 			this.drawCurrent();
+			this.drawNPS();
 		}
 			this.drawFPS();
 		this.paint(g);
@@ -192,7 +196,70 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx2D.setColor(Color.gray);
 		this.gfx2D.fillRect(0,0,this.bounds.width,this.bounds.height);
 		this.gfx2D.setColor(Color.white);
-		this.gfx2D.fillRect((int)(this.bounds.width * .25) - (5 * this.SQ_HEIGHT), (int)(this.bounds.height * .5) - (10 * this.SQ_HEIGHT), (10 * this.SQ_HEIGHT), (20 * this.SQ_HEIGHT));
+		this.gfx2D.fillRect((int)(this.bounds.width * .25) - (5 * this.SQ_HEIGHT), (int)(this.bounds.height * .55) - (10 * this.SQ_HEIGHT), (10 * this.SQ_HEIGHT), (20 * this.SQ_HEIGHT));
+	}
+
+	public void placeElectromino() {
+		this.current = this.nes.remove();
+		this.nes.add(new Electromino((int)(Math.floor(7 * Math.random()))));
+	}
+
+	public void drawNPS() {		//render following pieces
+		Queue<Electromino> tmp = new LinkedList<Electromino>();
+		int xi = (int)(this.bounds.width * .15);
+		int yi = (int)(this.bounds.height * .17);		//from bottom upwards
+		int n = 0;
+
+		while (this.nes.size() > 0) {
+			Electromino h = this.nes.remove();
+        	
+			int b = 0;
+			if (h.getC() != 6 && h.getC() != 0) {
+				b = 1;
+			}
+			else {
+				b = 0;
+			}
+			for (int i = 0; i < h.getPiece().length; i++) {
+				for (int j = 0; j < h.getPiece()[0].length; j++) {
+					if (h.getPiece()[i][j] != null) {
+						if (h.getC() == 6) {
+							this.gfx2D.setColor(Color.yellow);
+						}
+						else if (h.getC() == 5) {
+							this.gfx2D.setColor(Color.green);
+						}
+						else if (h.getC() == 4) {
+							this.gfx2D.setColor(Color.cyan);
+						}
+						else if (h.getC() == 3) {
+							this.gfx2D.setColor(Color.magenta);
+						}
+						else if (h.getC() == 2) {
+							this.gfx2D.setColor(Color.blue);
+						}
+						else if (h.getC() == 1) {
+							this.gfx2D.setColor(Color.orange);
+						}
+						else if (h.getC() == 0) {
+							this.gfx2D.setColor(Color.red);
+						}
+						this.gfx2D.fillRect(xi + (i * this.SQ_HEIGHT) + (n * this.SQ_HEIGHT), yi - ((j + b) * this.SQ_HEIGHT), this.SQ_HEIGHT, this.SQ_HEIGHT);
+						this.gfx2D.setColor(Color.black);
+					}
+				}
+			}
+			//n = n + h.getPiece().length + 1;
+			n = n + 5;
+			tmp.add(h);
+		}
+		//if (tmp.peek().getC() != 6) {
+			this.gfx2D.drawRect(xi - (this.SQ_HEIGHT/2), yi - (3 * this.SQ_HEIGHT), 5 * this.SQ_HEIGHT , 4 * this.SQ_HEIGHT);
+			//}
+		//else {
+		//	this.gfx2D.drawRect(xi + (this.SQ_HEIGHT/2), yi - (int)((-1.5 + tmp.peek().getPiece().length) * this.SQ_HEIGHT), (tmp.peek().getPiece().length - 1) * this.SQ_HEIGHT , (tmp.peek().getPiece().length - 1) * this.SQ_HEIGHT);
+		//}
+		this.nes = tmp;
 	}
 
 	public void drawFPS() {
@@ -204,9 +271,8 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public void drawCurrent() {
-		this.gfx2D.setColor(Color.yellow);
 		int xi = (int)(this.bounds.width * .25) - (5 * this.SQ_HEIGHT);
-		int yi = (int)(this.bounds.height * .5) + (10 * this.SQ_HEIGHT) - this.SQ_HEIGHT;		//from bottom upwards and we start drawing from the top right
+		int yi = (int)(this.bounds.height * .55) + (10 * this.SQ_HEIGHT) - this.SQ_HEIGHT;		//from bottom upwards and we start drawing from the top right
 		for (int i = 0; i < this.GRID.length; i++) {
 			for (int j = 0; j < this.GRID[0].length; j++) {
 				if (this.GRID[i][j] != null) {
