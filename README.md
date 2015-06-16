@@ -17,11 +17,17 @@ Controls
 ================
 
 Enter - Start Button
+
 A - Rotate counter clockwise
+
 D - Rotate clockwise
+
 Left Arrow - Move Electromino left
+
 Right Arrow - Move Electromino right
+
 Space - Set piece
+
 
 Credits
 ================
