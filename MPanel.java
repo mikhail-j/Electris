@@ -542,9 +542,9 @@ public class MPanel extends Panel implements Runnable{
 	public void drawTitle() {
 		this.gfx2D.setColor(Color.black);
 		this.gfx2D.setFont(this.end_font);
-		this.gfx2D.drawString(TITLE, (this.bounds.width/2) - (33 * (TITLE.length())), (int)(this.bounds.height * .35) - 36);
+		this.gfx2D.drawString(TITLE, (this.bounds.width/2) - (33 * (TITLE.length())), (int)(this.bounds.height * .35) - 36 + 100);
 		this.gfx2D.setFont(this.font);
-		this.gfx2D.drawString(TITLE_PLAY_NOW, (this.bounds.width/2) - (8 * (TITLE_PLAY_NOW.length())), (this.bounds.height/2) - 10);
+		this.gfx2D.drawString(TITLE_PLAY_NOW, (this.bounds.width/2) - (8 * (TITLE_PLAY_NOW.length())), (this.bounds.height/2) - 10 + 100);
 	}
 
 	public void drawBGD() {
