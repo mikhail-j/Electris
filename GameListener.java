@@ -44,10 +44,10 @@ public class GameListener implements KeyListener , Runnable {
 	public void keyPressed(KeyEvent e) {
 		if (this.pan.getGameState() != null && this.pan.getGameState()) {
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				this.pan.moveUp();
+				//this.pan.moveUp();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				this.pan.moveDown();
+				//this.pan.moveDown();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 				this.pan.moveLeft();

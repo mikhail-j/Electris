@@ -12,13 +12,16 @@ public class MPanel extends Panel implements Runnable{
 	private Boolean isUpdating;
 	private Boolean isMenu;
 	private Boolean isGame;
+	private Boolean isOver;
 	private Frame ctx;
 	private Rectangle bounds;
 	private Font font;
+	private Font end_font;
 	private MWindow win;
 	private String TITLE_PLAY_NOW = "PRESS START";
 	private SQ[][] GRID;
 	private Integer SQ_HEIGHT;
+	private Integer PN;				//piece number
 	private Electromino current;
 	private Point cp;				//x and y position of the current electromino piece
 	private long frame_count;		//used to calculate fps
@@ -48,8 +51,10 @@ public class MPanel extends Panel implements Runnable{
 		this.isUpdating = true;
 		this.isMenu = true;
 		this.isGame = false;		//game hasn't started yet
+		this.isOver = false;
 		this.win = win;
 		this.font = new Font("Arial Monospaced", Font.PLAIN, 20);
+		this.end_font = new Font("Arial Monospaced", Font.PLAIN, 72);
 		this.ctx = window;
 		this.bounds = this.ctx.getBounds();
 		super.setSize(this.bounds.width,this.bounds.height);
@@ -57,14 +62,8 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx = this.can.createGraphics();
 		this.gfx2D = (Graphics2D)this.gfx;
 		this.gfx2D.setFont(this.font);
-		this.GRID = new SQ [10][20];
-		this.SQ_HEIGHT = 20;
-		this.current = new Electromino ((int)(Math.floor(7 * Math.random())));
-		this.nes = new LinkedList<Electromino>();
-		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
-		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
-		System.out.println("current piece size - width: " + this.current.getPiece().length + " height: " + this.current.getPiece()[0].length);
-		this.cp = new Point (3, 17);
+		this.initialize();
+
 		this.movable = new Boolean [4];
 		this.movable[0] = new Boolean(false);
 		this.movable[1] = new Boolean(false);
@@ -72,7 +71,47 @@ public class MPanel extends Panel implements Runnable{
 		this.movable[3] = new Boolean(false);
 		super.validate();
 	}
-	
+
+	public void initialize () {
+		this.GRID = new SQ [10][20];
+		this.SQ_HEIGHT = 20;
+		this.PN = new Integer(0);
+		this.current = new Electromino ((int)(Math.floor(7 * Math.random())));
+		this.nes = new LinkedList<Electromino>();
+		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
+		this.nes.add(new Electromino ((int)(Math.floor(7 * Math.random()))));
+		System.out.println("current piece size - width: " + this.current.getPiece().length + " height: " + this.current.getPiece()[0].length);
+		this.cp = new Point (3, 17);
+
+		this.cp.setLocation(this.cp.getX(),20);
+		boolean not_low = true;
+		boolean still_looking = true;
+		int ydiff = 0;
+		while (not_low) {
+			for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+				for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+					if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+						if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+							still_looking = false;
+							not_low = false;
+						}
+					}
+					else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+						still_looking = false;
+						not_low = false;
+					}
+				}
+			}
+			if (still_looking) {
+				--ydiff;
+			}
+			else {
+				++ydiff;
+			}
+		}
+		this.cp.translate(0,ydiff);
+	}
+
 	@Override
 	public void update (Graphics g) {
 		++frame_count;
@@ -84,12 +123,17 @@ public class MPanel extends Panel implements Runnable{
 		if (this.isMenu) {
 			this.drawTitle();
 		}
-		else {
+		else if (isGame) {
 			this.drawBGD();
 			this.drawCurrent();
 			this.drawNPS();
+			this.drawPN();
+			this.clearRow();
 		}
-			this.drawFPS();
+		else if (isOver) {
+			this.showFin();
+		}
+		this.drawFPS();
 		this.paint(g);
 		//this.isUpdating = false;
 	}
@@ -109,6 +153,32 @@ public class MPanel extends Panel implements Runnable{
 		if (chk && !this.movable[3]) {
 			this.cp.translate(-1,0);
 			this.movable[3] = !this.movable[3];
+			boolean not_low = true;
+			boolean still_looking = true;
+			int ydiff = 0;
+			while (not_low) {
+				for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+					for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+						if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+							if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+								still_looking = false;
+								not_low = false;
+							}
+						}
+						else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+							still_looking = false;
+							not_low = false;
+						}
+					}
+				}
+				if (still_looking) {
+					--ydiff;
+				}
+				else {
+					++ydiff;
+				}
+			}
+			this.cp.translate(0,ydiff);
 		}
 	}
 	
@@ -127,8 +197,35 @@ public class MPanel extends Panel implements Runnable{
 		if (chk && !this.movable[2]) {
 			this.cp.translate(1,0);
 			this.movable[2] = !this.movable[2];
+			boolean not_low = true;
+			boolean still_looking = true;
+			int ydiff = 0;
+			while (not_low) {
+				for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+					for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+						if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+							if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+								still_looking = false;
+								not_low = false;
+							}
+						}
+						else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+							still_looking = false;
+							not_low = false;
+						}
+					}
+				}
+				if (still_looking) {
+					--ydiff;
+				}
+				else {
+					++ydiff;
+				}
+			}
+			this.cp.translate(0,ydiff);
 		}
 	}
+	/*
 	public synchronized void moveDown () {
 		boolean chk = true;
 		//if (this.cp.getY() > 0 && !this.movable[1]) {
@@ -152,7 +249,7 @@ public class MPanel extends Panel implements Runnable{
 			this.movable[0] = !this.movable[0];
 		}
 	}
-
+*/
 	@Override
 	public void paint (Graphics g) {
 		super.paint(g);
@@ -268,6 +365,33 @@ public class MPanel extends Panel implements Runnable{
 				this.current = this.current.getNext();
 			}
 		}
+		this.cp.setLocation(this.cp.getX(),20);
+		boolean not_low = true;
+		boolean still_looking = true;
+		int ydiff = 0;
+		while (not_low) {
+			for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+				for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+					if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+						if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+							still_looking = false;
+							not_low = false;
+						}
+					}
+					else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+						still_looking = false;
+						not_low = false;
+					}
+				}
+			}
+			if (still_looking) {
+				--ydiff;
+			}
+			else {
+				++ydiff;
+			}
+		}
+		this.cp.translate(0,ydiff);
 	}
 
 	public void rCCW () {
@@ -352,6 +476,33 @@ public class MPanel extends Panel implements Runnable{
 				this.current = this.current.getPrev();
 			}
 		}
+		this.cp.setLocation(this.cp.getX(),20);
+		boolean not_low = true;
+		boolean still_looking = true;
+		int ydiff = 0;
+		while (not_low) {
+			for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+				for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+					if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+						if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+							still_looking = false;
+							not_low = false;
+						}
+					}
+					else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+						still_looking = false;
+						not_low = false;
+					}
+				}
+			}
+			if (still_looking) {
+				--ydiff;
+			}
+			else {
+				++ydiff;
+			}
+		}
+		this.cp.translate(0,ydiff);
 	}
 
 	public void setGameState(Boolean b) {
@@ -371,8 +522,44 @@ public class MPanel extends Panel implements Runnable{
 	}
 
 	public void placeElectromino() {
+		for (int i = 0; i < this.current.getPiece().length; i++) {
+			for (int j = 0; j < this.current.getPiece()[0].length; j++) {
+				if (this.current.getPiece()[i][j] != null) {
+					this.GRID[i + (int)this.cp.getX()][j + (int)this.cp.getY()] = this.current.getPiece()[i][j];
+				}
+			}
+		}
+		this.cp.setLocation(3,20);
 		this.current = this.nes.remove();
+		this.PN = ++this.PN;
 		this.nes.add(new Electromino((int)(Math.floor(7 * Math.random()))));
+		this.cp.setLocation(this.cp.getX(),20);
+		boolean not_low = true;
+		boolean still_looking = true;
+		int ydiff = 0;
+		while (not_low) {
+			for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
+				for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
+					if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
+						if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
+							still_looking = false;
+							not_low = false;
+						}
+					}
+					else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
+						still_looking = false;
+						not_low = false;
+					}
+				}
+			}
+			if (still_looking) {
+				--ydiff;
+			}
+			else {
+				++ydiff;
+			}
+		}
+		this.cp.translate(0,ydiff);
 	}
 
 	public void drawNPS() {		//render following pieces
@@ -436,9 +623,20 @@ public class MPanel extends Panel implements Runnable{
 	public void drawFPS() {
 		String fps = new String("FPS: " + (new DecimalFormat("#.###")).format((frame_count/((double)(System.nanoTime() - this.SYSTEM_TIME) * .000000001))));
 		frame_count = 0;
-		this.gfx2D.setColor(Color.black);
+		if (this.isOver) {
+			this.gfx.setColor(Color.white);
+		}
+		else {
+			this.gfx2D.setColor(Color.black);
+		}
 		this.gfx2D.drawString(fps, (int)(this.bounds.width * .75), (this.bounds.height/2) - 10);
 		this.SYSTEM_TIME = System.nanoTime();
+	}
+
+	public void drawPN() {			//total pieces dropped
+		String num = new String("Piece: " + (new DecimalFormat("####")).format(this.PN));
+		this.gfx2D.setColor(Color.black);
+		this.gfx2D.drawString(num, (int)(this.bounds.width * .75), (int)(this.bounds.height * .75) - 10);
 	}
 
 	public void drawCurrent() {
@@ -447,37 +645,32 @@ public class MPanel extends Panel implements Runnable{
 		for (int i = 0; i < this.GRID.length; i++) {
 			for (int j = 0; j < this.GRID[0].length; j++) {
 				if (this.GRID[i][j] != null) {
+					if (this.GRID[i][j].getC() == 6) {
+						this.gfx2D.setColor(Color.yellow);
+					}
+					else if (this.GRID[i][j].getC() == 5) {
+						this.gfx2D.setColor(Color.green);
+					}
+					else if (this.GRID[i][j].getC() == 4) {
+						this.gfx2D.setColor(Color.cyan);
+					}
+					else if (this.GRID[i][j].getC() == 3) {
+						this.gfx2D.setColor(Color.magenta);
+					}
+					else if (this.GRID[i][j].getC() == 2) {
+						this.gfx2D.setColor(Color.blue);
+					}
+					else if (this.GRID[i][j].getC() == 1) {
+						this.gfx2D.setColor(Color.orange);
+					}
+					else if (this.GRID[i][j].getC() == 0) {
+						this.gfx2D.setColor(Color.red);
+					}
 					this.gfx2D.fillRect(xi + (i * this.SQ_HEIGHT), yi - (j * this.SQ_HEIGHT), this.SQ_HEIGHT, this.SQ_HEIGHT);
 				}
 			}
 		}
-		this.cp.setLocation(this.cp.getX(),20);
-		boolean not_low = true;
-		boolean still_looking = true;
-		int ydiff = 0;
-		while (not_low) {
-			for (int i = 0; i < this.current.getPiece().length && still_looking; i++) {
-				for (int j = 0; j < this.current.getPiece()[0].length && still_looking; j++) {
-					if ((int)this.cp.getY() + j + ydiff >= 0 && (int)this.cp.getY() + j + ydiff < 20) {
-						if (this.current.getPiece()[i][j] != null && this.GRID[(int)this.cp.getX() + i][(int)this.cp.getY() + j + ydiff] != null) {
-							still_looking = false;
-							not_low = false;
-						}
-					}
-					else if ((int)this.cp.getY() + j + ydiff < 0 &&this.current.getPiece()[i][j] != null){//rock bottom
-						still_looking = false;
-						not_low = false;
-					}
-				}
-			}
-			if (still_looking) {
-				--ydiff;
-			}
-			else {
-				++ydiff;
-			}
-		}
-		this.cp.translate(0,ydiff);
+		
 		//System.out.println("ydiff: " + ydiff + " x: " + this.cp.getX() + " y: " + this.cp.getY());
 		int counter = 0;
 		for (int i = 0; i < this.current.getPiece().length; i++) {
@@ -507,7 +700,40 @@ public class MPanel extends Panel implements Runnable{
 					this.gfx2D.fillRect(xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY()) * this.SQ_HEIGHT), this.SQ_HEIGHT, this.SQ_HEIGHT);
 					this.gfx2D.setColor(Color.black);
 					this.gfx2D.drawString("" + ++counter, xi + ((i + (int)this.cp.getX()) * this.SQ_HEIGHT), yi - ((j + (int)this.cp.getY() - 1) * this.SQ_HEIGHT));
+					if (j + this.cp.getY() >= 20) {
+						this.isOver = true;
+						this.isGame = false;
+					}
 				}
+			}
+		}
+	}
+
+	public void clearRow() {
+		for (int i = 0; i < this.GRID[0].length; i++) {
+			boolean full = true;
+			for (int j = 0; j < this.GRID.length; j++) {
+				if (this.GRID[j][i] == null) {
+					full = false;
+				}
+			}
+			if (full) {
+				SQ[][] tmp = new SQ[10][20];
+				for (int x = 0; x < tmp[0].length; x++) {
+					for (int y = 0; y < tmp.length; y++) {
+						if (x < i) {
+							if (this.GRID[y][x] != null) {
+								tmp[y][x] = this.GRID[y][x];
+							}
+						}
+						else if (x > i) {				//skip the cleared row
+							if (this.GRID[y][x] != null) {
+								tmp[y][x - 1] = this.GRID[y][x];
+							}
+						}
+					}
+				}
+				this.GRID = tmp;
 			}
 		}
 	}
@@ -516,5 +742,15 @@ public class MPanel extends Panel implements Runnable{
 		this.gfx.setColor(Color.white);
 		this.gfx.fillRect(0,0,this.bounds.width,this.bounds.height);
 		this.gfx.setColor(Color.black);
+	}
+
+
+	public void showFin() {
+		this.gfx.setColor(Color.black);
+		this.gfx.fillRect(0,0,this.bounds.width,this.bounds.height);
+		this.gfx.setColor(Color.white);
+		this.gfx2D.setFont(this.end_font);
+		this.gfx2D.drawString("GAME OVER", (this.bounds.width/2) - (20 * ("GAME OVER".length())), (this.bounds.height/2) - 36);
+		this.gfx2D.setFont(this.font);
 	}
 }
