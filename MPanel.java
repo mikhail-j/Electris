@@ -20,6 +20,7 @@ public class MPanel extends Panel implements Runnable{
 	private Font end_font;
 	private MWindow win;
 	private String TITLE_PLAY_NOW = "PRESS START";
+	private String TITLE = "Eletris";
 	private SQ[][] GRID;
 	private Integer SQ_HEIGHT;
 	private Integer PN;				//piece number
@@ -167,6 +168,11 @@ public class MPanel extends Panel implements Runnable{
 				if (this.current.getPiece()[a][b] != null && a + x < 0) {
 					chk = false;
 				}
+				/*
+				else if (this.current.getPiece()[a][b] != null && a + x >= 0 && this.GRID[a + x][b + y] != null) {
+					chk = false;
+				}
+				*/
 			}
 		}
 		if (chk && !this.movable[3]) {
@@ -211,6 +217,11 @@ public class MPanel extends Panel implements Runnable{
 				if (this.current.getPiece()[a][b] != null && a + x > 9) {
 					chk = false;
 				}
+				/*
+				else if (this.current.getPiece()[a][b] != null && a + x < 20 && this.GRID[a + x][b + y] != null) {
+					chk = false;
+				}
+				*/
 			}
 		}
 		if (chk && !this.movable[2]) {
@@ -530,7 +541,10 @@ public class MPanel extends Panel implements Runnable{
 
 	public void drawTitle() {
 		this.gfx2D.setColor(Color.black);
-		this.gfx2D.drawString(TITLE_PLAY_NOW, (this.bounds.width/2) - (6 * (TITLE_PLAY_NOW.length())), (this.bounds.height/2) - 10);
+		this.gfx2D.setFont(this.end_font);
+		this.gfx2D.drawString(TITLE, (this.bounds.width/2) - (33 * (TITLE.length())), (int)(this.bounds.height * .35) - 36);
+		this.gfx2D.setFont(this.font);
+		this.gfx2D.drawString(TITLE_PLAY_NOW, (this.bounds.width/2) - (8 * (TITLE_PLAY_NOW.length())), (this.bounds.height/2) - 10);
 	}
 
 	public void drawBGD() {
